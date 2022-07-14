@@ -24,7 +24,10 @@ import {
 const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginStart())
     try {
-        const res = await axios.post(`/v1/auth/login`, user)
+        const res = await axios.post(`${apiUrl}/v1/auth/login`, user, {
+            withCredentials: true,
+            credentials: 'include'
+        })
         dispatch(loginSuccess(res.data))
         navigate("/home")
     } catch (error) {
@@ -35,7 +38,7 @@ const loginUser = async (user, dispatch, navigate) => {
 const registerUser = async (user, dispatch, navigate) => {
     dispatch(registerStart())
     try {
-        await axios.post(`/v1/auth/register`, user)
+        await axios.post(`${apiUrl}/v1/auth/register`, user)
         dispatch(registerSuccess())
         navigate("/login")
     } catch (error) {
@@ -46,7 +49,7 @@ const registerUser = async (user, dispatch, navigate) => {
 const getAllUser = async (dispatch, accessToken, id) => {
     dispatch(getAllUserStart())
     try {
-        const res = await axios.get(`/v1/user/${id}`, {
+        const res = await axios.get(`${apiUrl}/v1/user/${id}`, {
             headers: { token: `Bearer ${accessToken}` }
         })
         dispatch(getAllUserSuccess(res.data))
@@ -58,8 +61,8 @@ const getAllUser = async (dispatch, accessToken, id) => {
 const deleteUser = async (dispatch, accessToken, id, axiosJwt) => {
     dispatch(deleteUserStart())
     try {
-        const res = await axiosJwt.delete(`/v1/user/${id}`, {
-            headers: { 
+        const res = await axiosJwt.delete(`${apiUrl}/v1/user/${id}`, {
+            headers: {
                 token: `Bearer ${accessToken}`
             }
         })
@@ -72,8 +75,8 @@ const deleteUser = async (dispatch, accessToken, id, axiosJwt) => {
 const logoutUser = async (dispatch, id, navigate, accessToken, axiosJwt) => {
     dispatch(logoutStart())
     try {
-        await axiosJwt.post(`/v1/auth/logout`, id, {
-            headers: { token: `Bearer ${accessToken}`}
+        await axiosJwt.post(`${apiUrl}/v1/auth/logout`, id, {
+            headers: { token: `Bearer ${accessToken}` }
         })
         dispatch(logoutSuccess())
         navigate("/login")
